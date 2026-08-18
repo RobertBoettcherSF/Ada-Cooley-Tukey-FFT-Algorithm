@@ -1,15 +1,23 @@
 with Ada.Numerics;
 use Ada.Numerics;
+with Interfaces;
 
 package body Cooley_Tukey is
 
    -------------------------------------------------------------------------
    -- Is_Power_Of_Two
-   -- Uses a bitwise trick: N and (N - 1) == 0 if N is a power of two.
+   -- Uses Interfaces.Unsigned_32 to safely perform bitwise operations 
+   -- (N and (N - 1) == 0) for standard integer power-of-two validation.
    -------------------------------------------------------------------------
    function Is_Power_Of_Two (N : Integer) return Boolean is
+      use type Interfaces.Unsigned_32;
+      U : Interfaces.Unsigned_32;
    begin
-      return N > 0 and (N and (N - 1)) = 0;
+      if N <= 0 then
+         return False;
+      end if;
+      U := Interfaces.Unsigned_32 (N);
+      return (U and (U - 1)) = 0;
    end Is_Power_Of_Two;
 
    -------------------------------------------------------------------------
